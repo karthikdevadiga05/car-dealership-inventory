@@ -92,13 +92,28 @@ export default function Dashboard() {
       await load();
     });
 
-  const save = (values) =>
+    const save = (values, image) =>
     guarded(async () => {
       const isEdit = Boolean(editing.id);
-      await (isEdit ? api.updateVehicle(editing.id, values) : api.createVehicle(values));
+      const saved = await (isEdit
+        ? api.updateVehicle(editing.id, values)
+        : api.createVehicle(values));
+
+      // The vehicle is already saved at this point, so a photo failure must not
+      // make the admin submit the form again (that would create a duplicate).
+      let photoError = null;
+      try {
+        if (image.file) await api.uploadImage(saved.id, image.file);
+        else if (image.remove) await api.removeImage(saved.id);
+      } catch (err) {
+        if (err.status === 401) throw err;
+        photoError = err.message;
+      }
+
       setEditing(null);
-      notify(isEdit ? 'Vehicle updated' : 'Vehicle added');
       await load();
+      if (photoError) notify(`Saved, but the photo failed: ${photoError}`, 'error');
+      else notify(isEdit ? 'Vehicle updated' : 'Vehicle added');
     });
 
   const remove = async (v) => {
