@@ -80,4 +80,42 @@ describe('inventory API', () => {
 
     expect(response.status).toBe(403);
   });
+
+    it('purchase decreases the quantity by the requested amount', async () => {
+    const vehicle = await insertVehicle(toyota);
+
+    const response = await request(app)
+      .post(`/api/vehicles/${vehicle.id}/purchase`)
+      .set('Authorization', `Bearer ${userToken}`)
+      .send({ quantity: 3 });
+
+    expect(response.status).toBe(200);
+    expect(response.body.quantity).toBe(2);
+  });
+
+  it('purchase fails when requesting more than the available stock', async () => {
+    const vehicle = await insertVehicle(toyota);
+
+    const response = await request(app)
+      .post(`/api/vehicles/${vehicle.id}/purchase`)
+      .set('Authorization', `Bearer ${userToken}`)
+      .send({ quantity: 99 });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Not enough stock');
+  });
+
+  it.each([0, -1, 1.5, 'two'])(
+    'purchase returns 400 for an invalid quantity (%p)',
+    async (quantity) => {
+      const vehicle = await insertVehicle(toyota);
+
+      const response = await request(app)
+        .post(`/api/vehicles/${vehicle.id}/purchase`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({ quantity });
+
+      expect(response.status).toBe(400);
+    }
+  );
 });
