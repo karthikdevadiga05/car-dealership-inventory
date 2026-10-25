@@ -5,7 +5,7 @@ import Modal from './Modal';
 function Field({ id, label, children }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-medium text-slate-900">
+      <label htmlFor={id} className="mb-1 block text-sm font-medium text-ink">
         {label}
       </label>
       {children}
@@ -79,7 +79,10 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
         </div>
 
         {error && (
-          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+          <p
+            role="alert"
+            className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950 dark:text-red-200"
+          >
             {error}
           </p>
         )}

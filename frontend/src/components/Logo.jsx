@@ -1,8 +1,9 @@
 /** AutoYard logo: a rounded badge with a car silhouette, plus the wordmark. */
 export default function Logo({ light = false }) {
-  const badge = light ? 'fill-white' : 'fill-indigo-700';
+  const badge = light ? 'fill-white' : 'fill-indigo-700 dark:fill-indigo-500';
   const car = light ? 'fill-indigo-900' : 'fill-white';
-  const gap = light ? 'stroke-white' : 'stroke-indigo-700';
+  const gap = light ? 'stroke-white' : 'stroke-indigo-700 dark:stroke-indigo-500';
+  const word = light ? 'text-white' : 'text-indigo-900 dark:text-indigo-100';
 
   return (
     <span className="inline-flex items-center gap-2.5">
@@ -15,9 +16,7 @@ export default function Logo({ light = false }) {
         <circle cx="14" cy="26.5" r="3.6" strokeWidth="1.6" className={`${car} ${gap}`} />
         <circle cx="28" cy="26.5" r="3.6" strokeWidth="1.6" className={`${car} ${gap}`} />
       </svg>
-      <span className={`text-xl font-bold tracking-tight ${light ? 'text-white' : 'text-indigo-900'}`}>
-        AutoYard
-      </span>
+      <span className={`text-xl font-bold tracking-tight ${word}`}>AutoYard</span>
     </span>
   );
 }

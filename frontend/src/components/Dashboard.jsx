@@ -12,8 +12,8 @@ const EMPTY_FILTERS = { make: '', model: '', category: '', minPrice: '', maxPric
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5">
-      <p className="text-sm text-slate-600">{label}</p>
+    <div className="rounded-2xl border border-line bg-surface p-5">
+      <p className="text-sm text-muted">{label}</p>
       <p className="mt-1 text-3xl font-bold">{value}</p>
     </div>
   );
@@ -114,7 +114,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
-    <Navbar name={displayName(user)} onLogout={logout} />
+      <Navbar name={displayName(user)} onLogout={logout} />
+
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
         <section className="rounded-3xl bg-indigo-900 px-6 py-10 text-white sm:px-10">
           <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
@@ -153,9 +154,9 @@ export default function Dashboard() {
         </div>
 
         {loading ? (
-          <p className="py-10 text-center text-slate-600">Loading vehicles...</p>
+          <p className="py-10 text-center text-muted">Loading vehicles...</p>
         ) : vehicles.length === 0 ? (
-          <p className="py-10 text-center text-slate-600">No vehicles match your search.</p>
+          <p className="py-10 text-center text-muted">No vehicles match your search.</p>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {vehicles.map((v) => (

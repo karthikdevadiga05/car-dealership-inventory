@@ -1,5 +1,50 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --page: #f8fafc;
+  --surface: #ffffff;
+  --sunken: #e2e8f0;
+  --ink: #0f172a;
+  --muted: #475569;
+  --line: #e2e8f0;
+  --field: #64748b;
+  --brand: #4338ca;
+  --brand-hover: #3730a3;
+  --accent: #4338ca;
+  --accent-hover: #312e81;
+}
+
+.dark {
+  color-scheme: dark;
+  --page: #020617;
+  --surface: #0f172a;
+  --sunken: #1e293b;
+  --ink: #f1f5f9;
+  --muted: #94a3b8;
+  --line: #334155;
+  --field: #94a3b8;
+  --brand: #4f46e5;
+  --brand-hover: #4338ca;
+  --accent: #a5b4fc;
+  --accent-hover: #e0e7ff;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-field: var(--field);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-page text-ink antialiased;
 }

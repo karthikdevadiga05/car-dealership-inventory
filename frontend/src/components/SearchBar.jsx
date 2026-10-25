@@ -3,7 +3,7 @@ import { inputClass, linkBtn } from '../ui';
 function Field({ id, label, children }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-sm font-medium text-slate-900">
+      <label htmlFor={id} className="mb-1 block text-sm font-medium text-ink">
         {label}
       </label>
       {children}
@@ -17,7 +17,7 @@ export default function SearchBar({ filters, categories, onChange, onReset }) {
   return (
     <section
       aria-label="Search vehicles"
-      className="rounded-2xl border border-slate-200 bg-white p-5"
+      className="rounded-2xl border border-line bg-surface p-5"
     >
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-bold">Find the right vehicle</h3>

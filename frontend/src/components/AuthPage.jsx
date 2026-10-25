@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { inputClass, primaryBtn } from '../ui';
 import Logo from './Logo';
+import ThemeToggle from './ThemeToggle';
 
 export default function AuthPage() {
   const { login, register } = useAuth();
@@ -34,8 +35,8 @@ export default function AuthPage() {
   };
 
   const tabClass = (active) =>
-    `rounded-lg py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-indigo-700 ${
-      active ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-700 hover:text-slate-900'
+    `rounded-lg py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${
+      active ? 'bg-surface text-ink shadow-sm' : 'text-muted hover:text-ink'
     }`;
 
   return (
@@ -58,13 +59,17 @@ export default function AuthPage() {
         <p className="text-sm text-indigo-200">Built with React, Express and PostgreSQL.</p>
       </aside>
 
-      <main className="flex items-center justify-center p-6">
+      <main className="relative flex items-center justify-center p-6">
+        <div className="absolute right-4 top-4">
+          <ThemeToggle />
+        </div>
+
         <div className="w-full max-w-md">
           <div className="mb-6 lg:hidden">
             <Logo />
           </div>
 
-          <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-200 p-1">
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-sunken p-1">
             <button type="button" aria-pressed={isLogin} onClick={() => switchMode('login')} className={tabClass(isLogin)}>
               Sign in
             </button>
@@ -74,7 +79,7 @@ export default function AuthPage() {
           </div>
 
           <h2 className="mt-8 text-3xl font-bold">{isLogin ? 'Welcome back' : 'Create your account'}</h2>
-          <p className="mt-1 text-slate-600">
+          <p className="mt-1 text-muted">
             {isLogin ? 'Sign in to browse the inventory.' : 'It takes less than a minute.'}
           </p>
 
@@ -125,7 +130,7 @@ export default function AuthPage() {
                   type="button"
                   aria-pressed={showPassword}
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus-visible:outline-2 focus-visible:outline-indigo-700"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-sm font-semibold text-accent hover:text-accent-hover focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   {showPassword ? 'Hide' : 'Show'}
                 </button>
@@ -133,7 +138,10 @@ export default function AuthPage() {
             </div>
 
             {error && (
-              <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+              <p
+                role="alert"
+                className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 dark:bg-red-950 dark:text-red-200"
+              >
                 {error}
               </p>
             )}

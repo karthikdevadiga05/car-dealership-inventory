@@ -6,7 +6,7 @@ export default function App() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <p className="p-10 text-center text-slate-500">Loading...</p>;
+    return <p className="p-10 text-center text-muted">Loading...</p>;
   }
   return user ? <Dashboard /> : <AuthPage />;
 }
