@@ -9,7 +9,15 @@ const TINTS = [
   'bg-violet-100 text-violet-300 dark:bg-violet-950 dark:text-violet-700',
 ];
 
-export default function VehicleCard({ vehicle, isAdmin, onPurchase, onEdit, onDelete, onRestock }) {
+export default function VehicleCard({
+  vehicle,
+  isAdmin,
+  onPurchase,
+  onDetails,
+  onEdit,
+  onDelete,
+  onRestock,
+}) {
   const outOfStock = vehicle.quantity === 0;
 
   return (
@@ -46,13 +54,20 @@ export default function VehicleCard({ vehicle, isAdmin, onPurchase, onEdit, onDe
         <p className="mt-4 text-2xl font-bold">{formatPrice(vehicle.price)}</p>
 
         {!isAdmin && (
-          <button
-            onClick={() => onPurchase(vehicle)}
-            disabled={outOfStock}
-            className={`${primaryBtn} mt-4 disabled:bg-sunken disabled:text-muted disabled:opacity-100`}
-          >
-            {outOfStock ? 'Unavailable' : 'Purchase'}
-          </button>
+          <div className={`mt-4 grid gap-3 ${onDetails ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {onDetails && (
+              <button type="button" onClick={() => onDetails(vehicle)} className={secondaryBtn}>
+                View details
+              </button>
+            )}
+            <button
+              onClick={() => onPurchase(vehicle)}
+              disabled={outOfStock}
+              className={`${primaryBtn} disabled:bg-sunken disabled:text-muted disabled:opacity-100`}
+            >
+              {outOfStock ? 'Unavailable' : 'Purchase'}
+            </button>
+          </div>
         )}
 
         {isAdmin && (

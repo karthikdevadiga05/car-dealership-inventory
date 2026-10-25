@@ -10,7 +10,7 @@ const CUSTOMER = {
 const ADMIN = {
   eyebrow: 'Inventory control',
   lead: 'Keep your showroom',
-  words: ['stocked', 'fresh', 'organized', 'moving'],
+  words: ['stocked', 'organized', 'moving'],
   subtitle: 'Add vehicles, update prices and restock the cars that sell fastest.',
 };
 

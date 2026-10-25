@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api';
 import { useAuth } from '../AuthContext';
-import { displayName, formatPrice, primaryBtn } from '../ui';
+import { sortVehicles } from '../sortVehicles';
+import { displayName, formatPrice, inputClass, primaryBtn } from '../ui';
 import Hero from './Hero';
 import Navbar from './Navbar';
 import QuantityModal from './QuantityModal';
 import SearchBar from './SearchBar';
 import VehicleCard from './VehicleCard';
+import VehicleDetails from './VehicleDetails';
 import VehicleForm from './VehicleForm';
 
 const EMPTY_FILTERS = { make: '', model: '', category: '', minPrice: '', maxPrice: '' };
@@ -27,9 +29,11 @@ export default function Dashboard() {
   const [vehicles, setVehicles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [sort, setSort] = useState('featured');
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState(null);
   const [editing, setEditing] = useState(null); // null = closed, {} = new, vehicle = edit
+  const [viewing, setViewing] = useState(null);
   const [purchasing, setPurchasing] = useState(null);
   const [restocking, setRestocking] = useState(null);
 
@@ -41,6 +45,8 @@ export default function Dashboard() {
     }),
     [vehicles]
   );
+
+  const shown = useMemo(() => sortVehicles(vehicles, sort), [vehicles, sort]);
 
   const notify = (text, type = 'success') => {
     setToast({ text, type });
@@ -152,11 +158,28 @@ export default function Dashboard() {
           <h3 id="inventory" className="scroll-mt-20 text-2xl font-bold">
             Inventory
           </h3>
-          {isAdmin && (
-            <button onClick={() => setEditing({})} className={primaryBtn}>
-              + Add vehicle
-            </button>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="w-52">
+              <label htmlFor="sort" className="sr-only">
+                Sort vehicles
+              </label>
+              <select
+                id="sort"
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                className={inputClass}
+              >
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </div>
+            {isAdmin && (
+              <button onClick={() => setEditing({})} className={primaryBtn}>
+                + Add vehicle
+              </button>
+            )}
+          </div>
         </div>
 
         {loading ? (
@@ -165,12 +188,13 @@ export default function Dashboard() {
           <p className="py-10 text-center text-muted">No vehicles match your search.</p>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {vehicles.map((v) => (
+            {shown.map((v) => (
               <VehicleCard
                 key={v.id}
                 vehicle={v}
                 isAdmin={isAdmin}
                 onPurchase={setPurchasing}
+                onDetails={setViewing}
                 onEdit={setEditing}
                 onDelete={remove}
                 onRestock={setRestocking}
@@ -182,6 +206,17 @@ export default function Dashboard() {
 
       {editing && (
         <VehicleForm vehicle={editing} onSubmit={save} onClose={() => setEditing(null)} />
+      )}
+
+      {viewing && (
+        <VehicleDetails
+          vehicle={viewing}
+          onPurchase={(v) => {
+            setViewing(null);
+            setPurchasing(v);
+          }}
+          onClose={() => setViewing(null)}
+        />
       )}
 
       {purchasing && (
