@@ -48,3 +48,15 @@ export function requireAdmin(
   }
   next();
 }
+
+/** Must run after authenticate. Admins manage stock; only customers can buy. */
+export function requireCustomer(
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void {
+  if (req.user?.role === 'admin') {
+    return next(new AppError(403, 'Admins cannot purchase vehicles'));
+  }
+  next();
+}
