@@ -1,14 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
+import { asyncHandler as handle } from '../middleware/asyncHandler';
 import * as service from '../services/vehicle.service';
-
-type Handler = (req: Request, res: Response) => Promise<void>;
-
-/** Wraps an async handler so any thrown error reaches the error middleware. */
-const handle =
-  (fn: Handler) =>
-  (req: Request, res: Response, next: NextFunction): void => {
-    fn(req, res).catch(next);
-  };
 
 export const create = handle(async (req, res) => {
   res.status(201).json(await service.addVehicle(req.body ?? {}));
