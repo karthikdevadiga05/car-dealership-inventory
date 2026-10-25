@@ -114,7 +114,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
-    <Navbar name={displayName(user)} isAdmin={isAdmin} onLogout={logout} />
+    <Navbar name={displayName(user)} onLogout={logout} />
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
         <section className="rounded-3xl bg-indigo-900 px-6 py-10 text-white sm:px-10">
           <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
