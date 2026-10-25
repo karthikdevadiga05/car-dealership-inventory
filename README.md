@@ -7,48 +7,48 @@ A full-stack inventory system for a car dealership, built as a test-driven devel
 **Author:** Karthik R Sherigara
 **AI chat logs:** [PROMPTS.md](./PROMPTS.md)
 
-
 ## Screenshots
 
 | Sign in | Register |
 |---|---|
-| ![Sign in](screenshots/login.png) | ![Register](screenshots/register.png) |
+| ![Sign in](login.PNG) | ![Register](screenshots/register.PNG) |
 
 | Home 1 | Home 2 |
 |---|---|
-| ![Home 1](screenshots/home1.png) | ![Home 2](screenshots/home2.png) |
+| ![Home 1](screenshots/home1.PNG) | ![Home 2](screenshots/home2.PNG) |
 
 | Home 3 | Admin home |
 |---|---|
-| ![Home 3](screenshots/home3.png) | ![Admin home](screenshots/admin_home.png) |
+| ![Home 3](screenshots/home3.PNG) | ![Admin home](screenshots/admin_home.PNG) |
 
 | Vehicle details | Confirm purchase |
 |---|---|
-| ![Vehicle details](screenshots/view_details.png) | ![Confirm purchase](screenshots/confirm_purchase.png) |
+| ![Vehicle details](screenshots/view_details.PNG) | ![Confirm purchase](screenshots/confirm_purchase.PNG) |
 
 | Purchase confirmation message | Filter |
 |---|---|
-| ![Purchase confirmation message](screenshots/confirm_purchase_msg.png) | ![Filter](screenshots/filter.png) |
+| ![Purchase confirmation message](screenshots/confirm_purchase_msg.PNG) | ![Filter](screenshots/filter.PNG) |
 
 | Price: low to high | Price: high to low |
 |---|---|
-| ![Price low to high](screenshots/price_lowtohigh.png) | ![Price high to low](screenshots/price_hightolow.png) |
+| ![Price low to high](screenshots/price_lowtohigh.PNG) | ![Price high to low](screenshots/price_hightolow.PNG) |
 
 | Night mode | Stock unavailable |
 |---|---|
-| ![Night mode](screenshots/night_mode.png) | ![Stock unavailable](screenshots/stock_no.png) |
+| ![Night mode](screenshots/night_mode.PNG) | ![Stock unavailable](screenshots/stock_no.PNG) |
 
 | Features | Add vehicle |
 |---|---|
-| ![Features](screenshots/features.jpg) | ![Add vehicle](screenshots/add_vehicle.png) |
+| ![Features](screenshots/features.jpeg) | ![Add vehicle](screenshots/add_vehicle.PNG) |
 
 | Crop image | Edit vehicle |
 |---|---|
-| ![Crop image](screenshots/crop_img.png) | ![Edit vehicle](screenshots/edit_vehicle.png) |
+| ![Crop image](screenshots/crop_img.PNG) | ![Edit vehicle](screenshots/edit_vehicle.PNG) |
 
 | Restock | Stock available |
 |---|---|
-| ![Restock](screenshots/restoke.png) | ![Stock available](screenshots/stock_yes.png) |
+| ![Restock](screenshots/restoke.PNG) | ![Stock available](screenshots/stock_yes.PNG) |
+
 ## Features
 
 **Everyone**
