@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api';
 import { useAuth } from '../AuthContext';
 import { displayName, formatPrice, primaryBtn } from '../ui';
+import Hero from './Hero';
 import Navbar from './Navbar';
 import QuantityModal from './QuantityModal';
 import SearchBar from './SearchBar';
@@ -92,7 +93,7 @@ export default function Dashboard() {
       await load();
     });
 
-    const save = (values, image) =>
+  const save = (values, image) =>
     guarded(async () => {
       const isEdit = Boolean(editing.id);
       const saved = await (isEdit
@@ -131,20 +132,8 @@ export default function Dashboard() {
     <div className="min-h-screen">
       <Navbar name={displayName(user)} onLogout={logout} />
 
-      <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-        <section className="rounded-3xl bg-indigo-900 px-6 py-10 text-white sm:px-10">
-          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
-            {isAdmin ? 'Inventory control' : 'Showroom'}
-          </p>
-          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
-            {isAdmin ? 'Keep your showroom stocked.' : 'Find the car that fits your life.'}
-          </h2>
-          <p className="mt-2 max-w-xl text-indigo-100">
-            {isAdmin
-              ? 'Add vehicles, update prices and restock the cars that sell fastest.'
-              : 'Compare models, filter by price and buy straight from live stock.'}
-          </p>
-        </section>
+      <main className="mx-auto w-full max-w-[1600px] space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+        <Hero isAdmin={isAdmin} />
 
         <section aria-label="Inventory summary" className="grid gap-4 sm:grid-cols-3">
           <StatCard label="Vehicles listed" value={stats.total} />
@@ -159,8 +148,10 @@ export default function Dashboard() {
           onReset={() => setFilters(EMPTY_FILTERS)}
         />
 
-        <div className="flex items-center justify-between">
-          <h3 className="text-2xl font-bold">Inventory</h3>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 id="inventory" className="scroll-mt-20 text-2xl font-bold">
+            Inventory
+          </h3>
           {isAdmin && (
             <button onClick={() => setEditing({})} className={primaryBtn}>
               + Add vehicle
@@ -173,7 +164,7 @@ export default function Dashboard() {
         ) : vehicles.length === 0 ? (
           <p className="py-10 text-center text-muted">No vehicles match your search.</p>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {vehicles.map((v) => (
               <VehicleCard
                 key={v.id}
@@ -222,7 +213,7 @@ export default function Dashboard() {
       {toast && (
         <div
           role="status"
-          className={`fixed bottom-5 right-5 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-lg ${
+          className={`fixed bottom-5 left-4 right-4 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-lg sm:left-auto sm:right-5 sm:max-w-sm ${
             toast.type === 'error' ? 'bg-red-700' : 'bg-emerald-700'
           }`}
         >
