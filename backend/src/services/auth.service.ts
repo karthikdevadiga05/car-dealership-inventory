@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { env } from '../config/env';
 import { AppError } from '../errors/AppError';
 import {
   createUser,
@@ -35,4 +37,32 @@ export async function registerUser(
 
   const passwordHash = await bcrypt.hash(password as string, SALT_ROUNDS);
   return createUser(normalizedEmail, passwordHash);
+}
+
+export async function loginUser(
+  email: unknown,
+  password: unknown
+): Promise<{ token: string }> {
+  if (
+    typeof email !== 'string' ||
+    typeof password !== 'string' ||
+    !email ||
+    !password
+  ) {
+    throw new AppError(400, 'Email and password are required');
+  }
+
+  const user = await findByEmail(email.trim().toLowerCase());
+  const passwordMatches =
+    user !== undefined && (await bcrypt.compare(password, user.password_hash));
+
+  if (!user || !passwordMatches) {
+    throw new AppError(401, 'Invalid email or password');
+  }
+
+  const token = jwt.sign({ role: user.role }, env.jwtSecret, {
+    subject: String(user.id),
+    expiresIn: '1d',
+  });
+  return { token };
 }
