@@ -26,16 +26,18 @@ export default function VehicleCard({ vehicle, isAdmin, onPurchase, onEdit, onDe
 
       <p className="mt-4 text-2xl font-bold text-slate-900">{money(vehicle.price)}</p>
 
-      <button
-        onClick={() => onPurchase(vehicle)}
-        disabled={outOfStock}
-        className="mt-4 rounded-lg bg-indigo-600 py-2 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300"
-      >
-        {outOfStock ? 'Unavailable' : 'Purchase'}
-      </button>
+      {!isAdmin && (
+        <button
+          onClick={() => onPurchase(vehicle)}
+          disabled={outOfStock}
+          className="mt-4 rounded-lg bg-indigo-600 py-2 font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          {outOfStock ? 'Unavailable' : 'Purchase'}
+        </button>
+      )}
 
       {isAdmin && (
-        <div className="mt-3 grid grid-cols-3 gap-2 border-t border-slate-100 pt-3 text-sm">
+        <div className="mt-4 grid grid-cols-3 gap-2 text-sm">
           <button onClick={() => onEdit(vehicle)} className="rounded-lg border border-slate-300 py-1.5 hover:bg-slate-50">
             Edit
           </button>
