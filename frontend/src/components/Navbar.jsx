@@ -5,8 +5,8 @@ import ThemeToggle from './ThemeToggle';
 export default function Navbar({ name, onLogout }) {
   return (
     <header className="border-b border-line bg-surface">
-      <div className="mx-auto grid max-w-6xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3">
-        <Logo />
+        <div className="flex w-full items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+            <Logo />
 
         <p className="hidden truncate text-center text-muted md:block">
           Welcome, <span className="font-bold text-ink">{name}</span>
