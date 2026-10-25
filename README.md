@@ -9,21 +9,45 @@ A full-stack inventory system for a car dealership, built as a test-driven devel
 
 ## Screenshots
 
-| Sign in | Customer dashboard |
+| Sign in | Register |
 |---|---|
-| ![Sign in](screenshots/login.png) | ![Customer dashboard](screenshots/customer.png) |
+| ![Sign in](screenshots/login.png) | ![Register](screenshots/register.png) |
 
-| Vehicle details | Purchase popup |
+| Home 1 | Home 2 |
 |---|---|
-| ![Vehicle details](screenshots/details.png) | ![Purchase popup](screenshots/purchase.png) |
+| ![Home 1](screenshots/home1.png) | ![Home 2](screenshots/home2.png) |
 
-| Admin dashboard | Add vehicle with photo |
+| Home 3 | Admin home |
 |---|---|
-| ![Admin dashboard](screenshots/admin.png) | ![Add vehicle](screenshots/add-vehicle.png) |
+| ![Home 3](screenshots/home3.png) | ![Admin home](screenshots/admin_home.png) |
 
-| Dark mode |
-|---|
-| ![Dark mode](screenshots/dark.png) |
+| Vehicle details | Confirm purchase |
+|---|---|
+| ![Vehicle details](screenshots/view_details.png) | ![Confirm purchase](screenshots/confirm_purchase.png) |
+
+| Purchase confirmation message | Filter |
+|---|---|
+| ![Purchase confirmation message](screenshots/confirm_purchase_msg.png) | ![Filter](screenshots/filter.png) |
+
+| Price: low to high | Price: high to low |
+|---|---|
+| ![Price low to high](screenshots/price_lowtohigh.png) | ![Price high to low](screenshots/price_hightolow.png) |
+
+| Night mode | Stock unavailable |
+|---|---|
+| ![Night mode](screenshots/night_mode.png) | ![Stock no](screenshots/stock_no.png) |
+
+| Features | Add vehicle |
+|---|---|
+| ![Features](screenshots/features.jpg) | ![Add vehicle](screenshots/add_vehicle.png) |
+
+| Crop image | Edit vehicle |
+|---|---|
+| ![Crop image](screenshots/crop_img.png) | ![Edit vehicle](screenshots/edit_vehicle.png) |
+
+| Restock | Stock available |
+|---|---|
+| ![Restock](screenshots/restoke.png) | ![Stock yes](screenshots/stock_yes.png) |
 
 ## Features
 
