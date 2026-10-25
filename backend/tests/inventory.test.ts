@@ -70,4 +70,14 @@ describe('inventory API', () => {
 
     expect(response.status).toBe(403);
   });
+
+    it('purchase returns 403 for an admin', async () => {
+    const vehicle = await insertVehicle(toyota);
+
+    const response = await request(app)
+      .post(`/api/vehicles/${vehicle.id}/purchase`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(response.status).toBe(403);
+  });
 });
