@@ -6,6 +6,8 @@ import { AppError } from '../errors/AppError';
 export interface AuthUser {
   id: number;
   role: string;
+  email?: string;
+  name?: string | null;
 }
 
 declare global {
@@ -30,7 +32,12 @@ export function authenticate(
 
   try {
     const payload = jwt.verify(header.slice(7), env.jwtSecret) as jwt.JwtPayload;
-    req.user = { id: Number(payload.sub), role: payload.role };
+    req.user = {
+      id: Number(payload.sub),
+      role: payload.role,
+      email: payload.email,
+      name: payload.name,
+    };
     next();
   } catch {
     next(new AppError(401, 'Invalid or expired token'));

@@ -3,8 +3,8 @@ import { asyncHandler } from '../middleware/asyncHandler';
 import { loginUser, registerUser } from '../services/auth.service';
 
 export const register = asyncHandler(async (req, res) => {
-  const { email, password } = req.body ?? {};
-  res.status(201).json(await registerUser(email, password));
+  const { email, password, name } = req.body ?? {};
+  res.status(201).json(await registerUser(email, password, name));
 });
 
 export const login = asyncHandler(async (req, res) => {

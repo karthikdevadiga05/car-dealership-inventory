@@ -15,12 +15,15 @@ async function seed(): Promise<void> {
   const password = process.env.ADMIN_PASSWORD ?? 'admin123';
   const hash = await bcrypt.hash(password, 10);
 
+    const name = process.env.ADMIN_NAME ?? 'Admin';
+
   await pool.query(
-    `INSERT INTO users (email, password_hash, role) VALUES ($1, $2, 'admin')
-     ON CONFLICT (email) DO UPDATE SET role = 'admin', password_hash = EXCLUDED.password_hash`,
-    [email, hash]
+    `INSERT INTO users (email, password_hash, role, name) VALUES ($1, $2, 'admin', $3)
+     ON CONFLICT (email) DO UPDATE
+     SET role = 'admin', password_hash = EXCLUDED.password_hash, name = EXCLUDED.name`,
+    [email, hash, name]
   );
-  console.log(`Admin ready: ${email} / ${password}`);
+  console.log(`Admin ready: ${name} <${email}> / ${password}`);
 
   const { rows } = await pool.query('SELECT COUNT(*)::int AS count FROM vehicles');
   if (rows[0].count === 0) {
