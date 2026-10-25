@@ -42,7 +42,7 @@ describe('vehicles API', () => {
   it('POST /api/vehicles creates a vehicle', async () => {
     const response = await request(app)
       .post('/api/vehicles')
-      .set('Authorization', `Bearer ${userToken}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send(toyota);
 
     expect(response.status).toBe(201);
@@ -53,10 +53,19 @@ describe('vehicles API', () => {
   it('POST /api/vehicles returns 400 when fields are missing', async () => {
     const response = await request(app)
       .post('/api/vehicles')
-      .set('Authorization', `Bearer ${userToken}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({ make: 'Toyota' });
 
     expect(response.status).toBe(400);
+  });
+
+  it('POST /api/vehicles returns 403 for a normal user', async () => {
+    const response = await request(app)
+      .post('/api/vehicles')
+      .set('Authorization', `Bearer ${userToken}`)
+      .send(toyota);
+
+    expect(response.status).toBe(403);
   });
 
   it('GET /api/vehicles lists all vehicles', async () => {
@@ -102,12 +111,23 @@ describe('vehicles API', () => {
 
     const response = await request(app)
       .put(`/api/vehicles/${vehicle.id}`)
-      .set('Authorization', `Bearer ${userToken}`)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({ price: 27000 });
 
     expect(response.status).toBe(200);
     expect(response.body.price).toBe(27000);
     expect(response.body.make).toBe('Toyota');
+  });
+
+  it('PUT /api/vehicles/:id returns 403 for a normal user', async () => {
+    const vehicle = await insertVehicle(toyota);
+
+    const response = await request(app)
+      .put(`/api/vehicles/${vehicle.id}`)
+      .set('Authorization', `Bearer ${userToken}`)
+      .send({ price: 27000 });
+
+    expect(response.status).toBe(403);
   });
 
   it('DELETE /api/vehicles/:id returns 403 for a normal user', async () => {
