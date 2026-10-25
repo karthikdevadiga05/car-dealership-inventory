@@ -5,17 +5,21 @@ export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token) =>
   token ? localStorage.setItem(TOKEN_KEY, token) : localStorage.removeItem(TOKEN_KEY);
 
+/** Full URL of a vehicle photo from the imagePath the API returns (null when there is none). */
+export const imageSrc = (path) => (path ? `${BASE}${path}` : null);
+
 /** Single place that talks to the backend: adds the JWT and normalises errors. */
 async function request(path, { method = 'GET', body, auth = true } = {}) {
   const headers = {};
-  if (body) headers['Content-Type'] = 'application/json';
+  const isForm = body instanceof FormData;
+  if (body && !isForm) headers['Content-Type'] = 'application/json';
   const token = getToken();
   if (auth && token) headers.Authorization = `Bearer ${token}`;
 
   const res = await fetch(`${BASE}${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
   });
   if (res.status === 204) return null;
 
@@ -29,7 +33,7 @@ async function request(path, { method = 'GET', body, auth = true } = {}) {
 }
 
 export const api = {
-    register: (email, password, name) =>
+  register: (email, password, name) =>
     request('/auth/register', { method: 'POST', body: { email, password, name }, auth: false }),
   login: (email, password) =>
     request('/auth/login', { method: 'POST', body: { email, password }, auth: false }),
@@ -48,6 +52,13 @@ export const api = {
   deleteVehicle: (id) => request(`/vehicles/${id}`, { method: 'DELETE' }),
   purchase: (id, quantity = 1) =>
     request(`/vehicles/${id}/purchase`, { method: 'POST', body: { quantity } }),
-    restock: (id, quantity) =>
+  restock: (id, quantity) =>
     request(`/vehicles/${id}/restock`, { method: 'POST', body: { quantity } }),
+
+  uploadImage: (id, file) => {
+    const form = new FormData();
+    form.append('image', file);
+    return request(`/vehicles/${id}/image`, { method: 'PUT', body: form });
+  },
+  removeImage: (id) => request(`/vehicles/${id}/image`, { method: 'DELETE' }),
 };

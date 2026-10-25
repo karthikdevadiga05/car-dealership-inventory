@@ -1,4 +1,6 @@
+import { imageSrc } from '../api';
 import { formatPrice, primaryBtn, secondaryBtn } from '../ui';
+import VehicleImage from './VehicleImage';
 
 const TINTS = [
   'bg-sky-100 text-sky-300 dark:bg-sky-950 dark:text-sky-700',
@@ -7,32 +9,21 @@ const TINTS = [
   'bg-violet-100 text-violet-300 dark:bg-violet-950 dark:text-violet-700',
 ];
 
-function CarIllustration() {
-  return (
-    <svg viewBox="0 0 200 100" className="h-28 w-48" aria-hidden="true">
-      <path
-        d="M20 70 L30 52 Q34 46 42 44 L70 38 Q80 24 96 22 L128 22 Q142 24 150 38 L172 44 Q184 48 184 60 L184 70 Z"
-        fill="currentColor"
-      />
-      <path d="M78 38 Q86 28 98 27 L126 27 Q136 28 142 38 Z" fill="#f8fafc" opacity="0.8" />
-      <circle cx="56" cy="72" r="14" fill="#1e293b" stroke="#f8fafc" strokeWidth="2" />
-      <circle cx="56" cy="72" r="6" fill="#f8fafc" />
-      <circle cx="148" cy="72" r="14" fill="#1e293b" stroke="#f8fafc" strokeWidth="2" />
-      <circle cx="148" cy="72" r="6" fill="#f8fafc" />
-    </svg>
-  );
-}
-
 export default function VehicleCard({ vehicle, isAdmin, onPurchase, onEdit, onDelete, onRestock }) {
   const outOfStock = vehicle.quantity === 0;
 
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition hover:shadow-md">
-      <div className={`relative flex items-center justify-center py-6 ${TINTS[vehicle.id % TINTS.length]}`}>
+      <div className="relative">
+        <VehicleImage
+          src={imageSrc(vehicle.imagePath)}
+          alt={`${vehicle.make} ${vehicle.model}`}
+          tint={TINTS[vehicle.id % TINTS.length]}
+          className="h-44"
+        />
         <span className="absolute left-3 top-3 rounded-md bg-surface px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-ink">
           {vehicle.category}
         </span>
-        <CarIllustration />
       </div>
 
       <div className="flex flex-1 flex-col p-5">
