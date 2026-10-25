@@ -28,3 +28,6 @@ export async function login(
     next(err);
   }
 }
+export function me(req: Request, res: Response): void {
+  res.status(200).json(req.user);
+}
