@@ -3,7 +3,7 @@ import * as repo from '../repositories/vehicle.repository';
 
 const TEXT_FIELDS = ['make', 'model', 'category'] as const;
 
-function parseId(raw: unknown): number {
+export function parseId(raw: unknown): number {
   const id = Number(raw);
   if (!Number.isInteger(id) || id <= 0) {
     throw new AppError(400, 'Invalid vehicle id');

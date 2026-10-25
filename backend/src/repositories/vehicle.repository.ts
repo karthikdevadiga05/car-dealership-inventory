@@ -7,6 +7,7 @@ export interface Vehicle {
   category: string;
   price: number;
   quantity: number;
+  imagePath: string | null;
 }
 
 export interface VehicleInput {
@@ -25,8 +26,10 @@ export interface SearchFilters {
   maxPrice?: number;
 }
 
-// NUMERIC comes back from pg as a string, so cast price to a JS-friendly float.
-const COLUMNS = 'id, make, model, category, price::float8 AS price, quantity';
+const COLUMNS = `id, make, model, category, price::float8 AS price, quantity,
+  CASE WHEN image_data IS NULL THEN NULL
+       ELSE '/vehicles/' || id || '/image?v=' || (EXTRACT(EPOCH FROM image_updated_at))::bigint
+  END AS "imagePath"`;
 
 export async function insert(v: VehicleInput): Promise<Vehicle> {
   const result = await pool.query(
@@ -129,6 +132,47 @@ export async function incrementStock(
      WHERE id = $1
      RETURNING ${COLUMNS}`,
     [id, amount]
+  );
+  return result.rows[0];
+}
+
+
+export interface StoredImage {
+  data: Buffer;
+  type: string;
+}
+
+export async function saveImage(
+  id: number,
+  data: Buffer,
+  type: string
+): Promise<Vehicle | undefined> {
+  const result = await pool.query(
+    `UPDATE vehicles
+     SET image_data = $2, image_type = $3, image_updated_at = NOW()
+     WHERE id = $1
+     RETURNING ${COLUMNS}`,
+    [id, data, type]
+  );
+  return result.rows[0];
+}
+
+export async function clearImage(id: number): Promise<Vehicle | undefined> {
+  const result = await pool.query(
+    `UPDATE vehicles
+     SET image_data = NULL, image_type = NULL, image_updated_at = NULL
+     WHERE id = $1
+     RETURNING ${COLUMNS}`,
+    [id]
+  );
+  return result.rows[0];
+}
+
+export async function findImage(id: number): Promise<StoredImage | undefined> {
+  const result = await pool.query(
+    `SELECT image_data AS data, image_type AS type
+     FROM vehicles WHERE id = $1 AND image_data IS NOT NULL`,
+    [id]
   );
   return result.rows[0];
 }
