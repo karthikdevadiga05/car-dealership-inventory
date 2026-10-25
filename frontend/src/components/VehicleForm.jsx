@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import Cropper from 'react-easy-crop';
 import { imageSrc } from '../api';
+import { cropImage } from '../cropImage';
 import { resizeImage } from '../resizeImage';
 import { inputClass, primaryBtn, secondaryBtn } from '../ui';
 import Modal from './Modal';
@@ -8,6 +10,7 @@ import VehicleImage from './VehicleImage';
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_PICK_BYTES = 20 * 1024 * 1024; // what the admin may pick
 const MAX_IMAGE_BYTES = 2 * 1024 * 1024; // what is actually uploaded (after resizing)
+const ASPECT = 16 / 9; // shape of the photo area on a vehicle card
 
 function Field({ id, label, children }) {
   return (
@@ -40,18 +43,32 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
-  // Free the temporary preview URL when it changes or the form closes.
+  // The photo currently open in the cropper.
+  const [cropFile, setCropFile] = useState(null);
+  const [cropUrl, setCropUrl] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedArea, setCroppedArea] = useState(null);
+
+  // Free the temporary URLs when they change or the form closes.
   useEffect(
     () => () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     },
     [previewUrl]
   );
+  useEffect(
+    () => () => {
+      if (cropUrl) URL.revokeObjectURL(cropUrl);
+    },
+    [cropUrl]
+  );
 
   const set = (field) => (e) => setValues({ ...values, [field]: e.target.value });
 
-  const pickFile = async (e) => {
+  const pickFile = (e) => {
     const picked = e.target.files?.[0];
+    e.target.value = ''; // lets the admin pick the same file again after cancelling
     if (!picked) return;
     if (!ALLOWED_TYPES.includes(picked.type)) {
       setError('Photo must be a JPEG, PNG or WebP image');
@@ -62,9 +79,27 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
       return;
     }
     setError('');
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCroppedArea(null);
+    setCropFile(picked);
+    setCropUrl(URL.createObjectURL(picked));
+  };
+
+  const closeCrop = () => {
+    setCropFile(null);
+    setCropUrl(null);
+  };
+
+  // whole = true keeps the full photo (only shrunk); otherwise the chosen crop is applied.
+  const finishCrop = async (whole) => {
     setProcessing(true);
-    const ready = await resizeImage(picked);
+    const ready =
+      whole || !croppedArea
+        ? await resizeImage(cropFile)
+        : await cropImage(cropFile, croppedArea);
     setProcessing(false);
+    closeCrop();
     if (ready.size > MAX_IMAGE_BYTES) {
       setError('Photo must be 2 MB or smaller');
       return;
@@ -136,7 +171,48 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
         </div>
 
         <Field id="v-photo" label="Photo (optional)">
-          <VehicleImage src={shownPhoto} alt="Photo preview" className="mb-2 h-32 rounded-lg" />
+          {cropFile ? (
+            <div className="mb-2">
+              <div className="relative h-56 w-full overflow-hidden rounded-lg bg-slate-900">
+                <Cropper
+                  image={cropUrl}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={ASPECT}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={(_area, pixels) => setCroppedArea(pixels)}
+                />
+              </div>
+              <label htmlFor="v-zoom" className="mt-2 block text-sm font-medium text-ink">
+                Zoom
+              </label>
+              <input
+                id="v-zoom"
+                type="range"
+                min="1"
+                max="3"
+                step="0.05"
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="w-full"
+              />
+              <p className="text-sm text-muted">Drag the photo to choose what shows on the card.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button type="button" disabled={processing} onClick={() => finishCrop(false)} className={`${primaryBtn} flex-1`}>
+                  Apply crop
+                </button>
+                <button type="button" disabled={processing} onClick={() => finishCrop(true)} className={`${secondaryBtn} flex-1`}>
+                  Use whole photo
+                </button>
+                <button type="button" disabled={processing} onClick={closeCrop} className={`${secondaryBtn} flex-1`}>
+                  Cancel crop
+                </button>
+              </div>
+            </div>
+          ) : (
+            <VehicleImage src={shownPhoto} alt="Photo preview" className="mb-2 h-32 rounded-lg" />
+          )}
           <input
             id="v-photo"
             type="file"
@@ -147,9 +223,9 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
           <p className="mt-1 text-sm text-muted">
             {processing
               ? 'Preparing photo...'
-              : 'JPEG, PNG or WebP, up to 20 MB. Large photos are shrunk automatically. Without a photo, the default car illustration is shown.'}
+              : 'JPEG, PNG or WebP, up to 20 MB. After choosing, you can drag and zoom to crop. Without a photo, the default car illustration is shown.'}
           </p>
-          {shownPhoto && (
+          {shownPhoto && !cropFile && (
             <button
               type="button"
               onClick={removePhoto}
@@ -173,7 +249,11 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
           <button type="button" onClick={onClose} className={secondaryBtn}>
             Cancel
           </button>
-          <button type="submit" disabled={busy || processing} className={primaryBtn}>
+          <button
+            type="submit"
+            disabled={busy || processing || Boolean(cropFile)}
+            className={primaryBtn}
+          >
             {busy ? 'Saving...' : isEdit ? 'Save changes' : 'Add vehicle'}
           </button>
         </div>
