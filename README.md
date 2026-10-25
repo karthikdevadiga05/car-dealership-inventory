@@ -11,7 +11,7 @@ A full-stack inventory system for a car dealership, built as a test-driven devel
 
 | Sign in | Register |
 |---|---|
-| ![Sign in](login.PNG) | ![Register](screenshots/register.PNG) |
+| ![Sign in](screenshots/login.PNG) | ![Register](screenshots/register.PNG) |
 
 | Home 1 | Home 2 |
 |---|---|
