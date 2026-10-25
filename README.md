@@ -7,6 +7,7 @@ A full-stack inventory system for a car dealership, built as a test-driven devel
 **Author:** Karthik R Sherigara
 **AI chat logs:** [PROMPTS.md](./PROMPTS.md)
 
+
 ## Screenshots
 
 | Sign in | Register |
@@ -35,7 +36,7 @@ A full-stack inventory system for a car dealership, built as a test-driven devel
 
 | Night mode | Stock unavailable |
 |---|---|
-| ![Night mode](screenshots/night_mode.png) | ![Stock no](screenshots/stock_no.png) |
+| ![Night mode](screenshots/night_mode.png) | ![Stock unavailable](screenshots/stock_no.png) |
 
 | Features | Add vehicle |
 |---|---|
@@ -47,8 +48,7 @@ A full-stack inventory system for a car dealership, built as a test-driven devel
 
 | Restock | Stock available |
 |---|---|
-| ![Restock](screenshots/restoke.png) | ![Stock yes](screenshots/stock_yes.png) |
-
+| ![Restock](screenshots/restoke.png) | ![Stock available](screenshots/stock_yes.png) |
 ## Features
 
 **Everyone**
