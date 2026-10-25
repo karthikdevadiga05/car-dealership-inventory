@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { inputClass, primaryBtn } from '../ui';
+import Logo from './Logo';
 
 export default function AuthPage() {
   const { login, register } = useAuth();
   const [mode, setMode] = useState('login');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +25,7 @@ export default function AuthPage() {
     setError('');
     setBusy(true);
     try {
-      await (isLogin ? login(email, password) : register(email, password));
+      await (isLogin ? login(email, password) : register(email, password, name.trim()));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -39,7 +41,7 @@ export default function AuthPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <aside className="hidden flex-col justify-between bg-indigo-900 p-12 text-white lg:flex">
-        <p className="text-2xl font-bold">🚗 AutoYard</p>
+        <Logo light />
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
             Dealership inventory
@@ -58,7 +60,9 @@ export default function AuthPage() {
 
       <main className="flex items-center justify-center p-6">
         <div className="w-full max-w-md">
-          <p className="mb-6 text-2xl font-bold text-indigo-900 lg:hidden">🚗 AutoYard</p>
+          <div className="mb-6 lg:hidden">
+            <Logo />
+          </div>
 
           <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-200 p-1">
             <button type="button" aria-pressed={isLogin} onClick={() => switchMode('login')} className={tabClass(isLogin)}>
@@ -75,6 +79,21 @@ export default function AuthPage() {
           </p>
 
           <form onSubmit={submit} className="mt-6 space-y-4">
+            {!isLogin && (
+              <div>
+                <label htmlFor="name" className="mb-1 block text-sm font-medium">Full name</label>
+                <input
+                  id="name"
+                  required
+                  maxLength={60}
+                  autoComplete="name"
+                  placeholder="e.g. Asha Rao"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            )}
             <div>
               <label htmlFor="email" className="mb-1 block text-sm font-medium">Email address</label>
               <input

@@ -23,8 +23,8 @@ export function AuthProvider({ children }) {
     setUser(await api.me());
   };
 
-  const register = async (email, password) => {
-    await api.register(email, password);
+  const register = async (email, password, name) => {
+    await api.register(email, password, name);
     await login(email, password);
   };
 
