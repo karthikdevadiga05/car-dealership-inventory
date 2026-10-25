@@ -104,3 +104,28 @@ export async function remove(id: number): Promise<boolean> {
   const result = await pool.query('DELETE FROM vehicles WHERE id = $1', [id]);
   return (result.rowCount ?? 0) > 0;
 }
+
+
+/** Atomic: only decrements when stock remains, so concurrent buyers cannot oversell. */
+export async function decrementStock(id: number): Promise<Vehicle | undefined> {
+  const result = await pool.query(
+    `UPDATE vehicles SET quantity = quantity - 1
+     WHERE id = $1 AND quantity > 0
+     RETURNING ${COLUMNS}`,
+    [id]
+  );
+  return result.rows[0];
+}
+
+export async function incrementStock(
+  id: number,
+  amount: number
+): Promise<Vehicle | undefined> {
+  const result = await pool.query(
+    `UPDATE vehicles SET quantity = quantity + $2
+     WHERE id = $1
+     RETURNING ${COLUMNS}`,
+    [id, amount]
+  );
+  return result.rows[0];
+}

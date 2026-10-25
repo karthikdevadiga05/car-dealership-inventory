@@ -98,3 +98,27 @@ export async function deleteVehicle(rawId: unknown): Promise<void> {
   const deleted = await repo.remove(parseId(rawId));
   if (!deleted) throw new AppError(404, 'Vehicle not found');
 }
+
+
+export async function purchaseVehicle(rawId: unknown): Promise<repo.Vehicle> {
+  const id = parseId(rawId);
+  const vehicle = await repo.decrementStock(id);
+  if (vehicle) return vehicle;
+
+  // No row updated: either the vehicle does not exist or it has no stock left.
+  if (!(await repo.findById(id))) throw new AppError(404, 'Vehicle not found');
+  throw new AppError(400, 'Vehicle is out of stock');
+}
+
+export async function restockVehicle(
+  rawId: unknown,
+  amount: unknown
+): Promise<repo.Vehicle> {
+  const id = parseId(rawId);
+  if (!Number.isInteger(amount) || (amount as number) <= 0) {
+    throw new AppError(400, 'quantity must be a positive integer');
+  }
+  const vehicle = await repo.incrementStock(id, amount as number);
+  if (!vehicle) throw new AppError(404, 'Vehicle not found');
+  return vehicle;
+}

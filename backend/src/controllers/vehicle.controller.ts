@@ -30,3 +30,11 @@ export const remove = handle(async (req, res) => {
   await service.deleteVehicle(req.params.id);
   res.status(204).send();
 });
+
+export const purchase = handle(async (req, res) => {
+  res.json(await service.purchaseVehicle(req.params.id));
+});
+
+export const restock = handle(async (req, res) => {
+  res.json(await service.restockVehicle(req.params.id, req.body?.quantity));
+});
