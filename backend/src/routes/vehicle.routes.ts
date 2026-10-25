@@ -8,8 +8,8 @@ router.use(authenticate);
 
 router.get('/', controller.list);
 router.get('/search', controller.search); // must stay above '/:id' routes
-router.post('/', controller.create);
-router.put('/:id', controller.update);
+router.post('/', requireAdmin, controller.create);
+router.put('/:id', requireAdmin, controller.update);
 router.delete('/:id', requireAdmin, controller.remove);
 router.post('/:id/purchase', controller.purchase);
 router.post('/:id/restock', requireAdmin, controller.restock);
