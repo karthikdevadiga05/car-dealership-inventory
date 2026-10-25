@@ -23,7 +23,7 @@ export const remove = handle(async (req, res) => {
 });
 
 export const purchase = handle(async (req, res) => {
-  res.json(await service.purchaseVehicle(req.params.id));
+  res.json(await service.purchaseVehicle(req.params.id, req.body?.quantity));
 });
 
 export const restock = handle(async (req, res) => {

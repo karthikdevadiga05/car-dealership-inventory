@@ -100,14 +100,24 @@ export async function deleteVehicle(rawId: unknown): Promise<void> {
 }
 
 
-export async function purchaseVehicle(rawId: unknown): Promise<repo.Vehicle> {
+export async function purchaseVehicle(
+  rawId: unknown,
+  rawQuantity?: unknown
+): Promise<repo.Vehicle> {
   const id = parseId(rawId);
-  const vehicle = await repo.decrementStock(id);
+  const amount = rawQuantity ?? 1;
+  if (!Number.isInteger(amount) || (amount as number) <= 0) {
+    throw new AppError(400, 'quantity must be a positive integer');
+  }
+
+  const vehicle = await repo.decrementStock(id, amount as number);
   if (vehicle) return vehicle;
 
-  // No row updated: either the vehicle does not exist or it has no stock left.
-  if (!(await repo.findById(id))) throw new AppError(404, 'Vehicle not found');
-  throw new AppError(400, 'Vehicle is out of stock');
+  // No row updated: the vehicle is missing, sold out, or has less stock than requested.
+  const existing = await repo.findById(id);
+  if (!existing) throw new AppError(404, 'Vehicle not found');
+  if (existing.quantity === 0) throw new AppError(400, 'Vehicle is out of stock');
+  throw new AppError(400, 'Not enough stock');
 }
 
 export async function restockVehicle(

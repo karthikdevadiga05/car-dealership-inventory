@@ -106,13 +106,16 @@ export async function remove(id: number): Promise<boolean> {
 }
 
 
-/** Atomic: only decrements when stock remains, so concurrent buyers cannot oversell. */
-export async function decrementStock(id: number): Promise<Vehicle | undefined> {
+/** Atomic: only decrements when enough stock remains, so concurrent buyers cannot oversell. */
+export async function decrementStock(
+  id: number,
+  amount: number
+): Promise<Vehicle | undefined> {
   const result = await pool.query(
-    `UPDATE vehicles SET quantity = quantity - 1
-     WHERE id = $1 AND quantity > 0
+    `UPDATE vehicles SET quantity = quantity - $2
+     WHERE id = $1 AND quantity >= $2
      RETURNING ${COLUMNS}`,
-    [id]
+    [id, amount]
   );
   return result.rows[0];
 }
