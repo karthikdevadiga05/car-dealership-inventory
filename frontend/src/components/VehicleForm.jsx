@@ -1,9 +1,19 @@
 import { useState } from 'react';
+import { inputClass, primaryBtn, secondaryBtn } from '../ui';
+import Modal from './Modal';
 
-const inputClass =
-  'w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200';
+function Field({ id, label, children }) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1 block text-sm font-medium text-slate-900">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
 
-/** Modal used for both "add vehicle" (no id) and "edit vehicle" (has id). */
+/** Popup used for both "add vehicle" (no id) and "edit vehicle" (has id). */
 export default function VehicleForm({ vehicle, onSubmit, onClose }) {
   const isEdit = Boolean(vehicle.id);
   const [values, setValues] = useState({
@@ -35,56 +45,54 @@ export default function VehicleForm({ vehicle, onSubmit, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex items-center justify-center bg-black/50 p-4">
-      <form onSubmit={submit} className="w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-xl">
-        <h2 className="text-xl font-bold">{isEdit ? 'Edit vehicle' : 'Add vehicle'}</h2>
-
+    <Modal
+      eyebrow="AutoYard inventory"
+      title={isEdit ? 'Edit vehicle' : 'Add a vehicle'}
+      onClose={onClose}
+    >
+      <form onSubmit={submit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1 block text-sm font-medium">Make</label>
-            <input required value={values.make} onChange={set('make')} className={inputClass} />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Model</label>
-            <input required value={values.model} onChange={set('model')} className={inputClass} />
-          </div>
+          <Field id="v-make" label="Make">
+            <input id="v-make" required value={values.make} onChange={set('make')} className={inputClass} />
+          </Field>
+          <Field id="v-model" label="Model">
+            <input id="v-model" required value={values.model} onChange={set('model')} className={inputClass} />
+          </Field>
         </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">Category</label>
+        <Field id="v-category" label="Category">
           <input
+            id="v-category"
             required
             placeholder="Sedan, SUV, Truck..."
             value={values.category}
             onChange={set('category')}
             className={inputClass}
           />
-        </div>
+        </Field>
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1 block text-sm font-medium">Price ($)</label>
-            <input required type="number" min="0" step="0.01" value={values.price} onChange={set('price')} className={inputClass} />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Quantity</label>
-            <input required type="number" min="0" step="1" value={values.quantity} onChange={set('quantity')} className={inputClass} />
-          </div>
+          <Field id="v-price" label="Price (₹)">
+            <input id="v-price" required type="number" min="0" step="0.01" value={values.price} onChange={set('price')} className={inputClass} />
+          </Field>
+          <Field id="v-quantity" label="Stock quantity">
+            <input id="v-quantity" required type="number" min="0" step="1" value={values.quantity} onChange={set('quantity')} className={inputClass} />
+          </Field>
         </div>
 
-        {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>}
+        {error && (
+          <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+            {error}
+          </p>
+        )}
 
-        <div className="flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-lg border border-slate-300 px-4 py-2 hover:bg-slate-50">
+        <div className="grid grid-cols-2 gap-3">
+          <button type="button" onClick={onClose} className={secondaryBtn}>
             Cancel
           </button>
-          <button
-            type="submit"
-            disabled={busy}
-            className="rounded-lg bg-indigo-600 px-4 py-2 font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {busy ? 'Saving...' : 'Save'}
+          <button type="submit" disabled={busy} className={primaryBtn}>
+            {busy ? 'Saving...' : isEdit ? 'Save changes' : 'Add vehicle'}
           </button>
         </div>
       </form>
-    </div>
+    </Modal>
   );
 }

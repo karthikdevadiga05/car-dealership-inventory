@@ -1,15 +1,22 @@
 import { useState } from 'react';
 import { useAuth } from '../AuthContext';
+import { inputClass, primaryBtn } from '../ui';
 
 export default function AuthPage() {
   const { login, register } = useAuth();
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
   const isLogin = mode === 'login';
+
+  const switchMode = (next) => {
+    setMode(next);
+    setError('');
+  };
 
   const submit = async (e) => {
     e.preventDefault();
@@ -24,67 +31,100 @@ export default function AuthPage() {
     }
   };
 
+  const tabClass = (active) =>
+    `rounded-lg py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-indigo-700 ${
+      active ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-700 hover:text-slate-900'
+    }`;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl">
-        <div className="mb-6 text-center">
-          <div className="text-4xl">🚗</div>
-          <h1 className="mt-2 text-2xl font-bold">Car Dealership</h1>
-          <p className="text-sm text-slate-500">
-            {isLogin ? 'Sign in to browse the inventory' : 'Create your account'}
+    <div className="grid min-h-screen lg:grid-cols-2">
+      <aside className="hidden flex-col justify-between bg-indigo-900 p-12 text-white lg:flex">
+        <p className="text-2xl font-bold">🚗 AutoYard</p>
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
+            Dealership inventory
+          </p>
+          <h1 className="mt-3 text-5xl font-bold leading-tight">
+            Every car,
+            <br />
+            one clear view.
+          </h1>
+          <p className="mt-4 max-w-md text-lg text-indigo-100">
+            Browse what is on the lot, check live stock and buy in a couple of clicks.
           </p>
         </div>
+        <p className="text-sm text-indigo-200">Built with React, Express and PostgreSQL.</p>
+      </aside>
 
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm font-medium">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Password</label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
-            />
+      <main className="flex items-center justify-center p-6">
+        <div className="w-full max-w-md">
+          <p className="mb-6 text-2xl font-bold text-indigo-900 lg:hidden">🚗 AutoYard</p>
+
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-200 p-1">
+            <button type="button" aria-pressed={isLogin} onClick={() => switchMode('login')} className={tabClass(isLogin)}>
+              Sign in
+            </button>
+            <button type="button" aria-pressed={!isLogin} onClick={() => switchMode('register')} className={tabClass(!isLogin)}>
+              Create account
+            </button>
           </div>
 
-          {error && (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
-          )}
+          <h2 className="mt-8 text-3xl font-bold">{isLogin ? 'Welcome back' : 'Create your account'}</h2>
+          <p className="mt-1 text-slate-600">
+            {isLogin ? 'Sign in to browse the inventory.' : 'It takes less than a minute.'}
+          </p>
 
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full rounded-lg bg-indigo-600 py-2.5 font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
-          >
-            {busy ? 'Please wait...' : isLogin ? 'Sign in' : 'Create account'}
-          </button>
-        </form>
+          <form onSubmit={submit} className="mt-6 space-y-4">
+            <div>
+              <label htmlFor="email" className="mb-1 block text-sm font-medium">Email address</label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="mb-1 block text-sm font-medium">Password</label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  minLength={6}
+                  autoComplete={isLogin ? 'current-password' : 'new-password'}
+                  placeholder="At least 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className={`${inputClass} pr-16`}
+                />
+                <button
+                  type="button"
+                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-sm font-semibold text-indigo-700 hover:text-indigo-900 focus-visible:outline-2 focus-visible:outline-indigo-700"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </div>
 
-        <p className="mt-6 text-center text-sm text-slate-500">
-          {isLogin ? "Don't have an account?" : 'Already registered?'}{' '}
-          <button
-            type="button"
-            onClick={() => {
-              setMode(isLogin ? 'register' : 'login');
-              setError('');
-            }}
-            className="font-semibold text-indigo-600 hover:underline"
-          >
-            {isLogin ? 'Register' : 'Sign in'}
-          </button>
-        </p>
-      </div>
+            {error && (
+              <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+                {error}
+              </p>
+            )}
+
+            <button type="submit" disabled={busy} className={`${primaryBtn} w-full py-3`}>
+              {busy ? 'Please wait...' : isLogin ? 'Sign in' : 'Create account'}
+            </button>
+          </form>
+        </div>
+      </main>
     </div>
   );
 }

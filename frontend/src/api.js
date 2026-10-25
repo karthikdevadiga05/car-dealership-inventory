@@ -46,7 +46,8 @@ export const api = {
   createVehicle: (vehicle) => request('/vehicles', { method: 'POST', body: vehicle }),
   updateVehicle: (id, vehicle) => request(`/vehicles/${id}`, { method: 'PUT', body: vehicle }),
   deleteVehicle: (id) => request(`/vehicles/${id}`, { method: 'DELETE' }),
-  purchase: (id) => request(`/vehicles/${id}/purchase`, { method: 'POST' }),
-  restock: (id, quantity) =>
+  purchase: (id, quantity = 1) =>
+    request(`/vehicles/${id}/purchase`, { method: 'POST', body: { quantity } }),
+    restock: (id, quantity) =>
     request(`/vehicles/${id}/restock`, { method: 'POST', body: { quantity } }),
 };
